@@ -1,0 +1,22 @@
+when HTML_TAG_MATCHED {
+	switch [HTML::tag name] {
+		"meta" {
+			if { [HTML::tag attribute "name"] equals "generator" } {
+				HTML::tag remove
+			}
+		}
+	}
+}
+
+when HTTP_REQUEST {
+	set uri HTTP::uri
+}
+when HTTP_RESPONSE {
+# HTTP Response inspection is pretty expensive - so we use this gate to only inspect on requests for / - you can modify this
+# as you see fit.
+	if { $uri equals "/" } {
+		HTTP::enable
+	} else {
+		HTTP::disable
+	}
+}
